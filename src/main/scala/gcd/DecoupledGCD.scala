@@ -4,6 +4,7 @@ package gcd
 
 import chisel3._
 import chisel3.util.Decoupled
+import circt.stage.ChiselStage
 
 class GcdInputBundle(val w: Int) extends Bundle {
   val value1 = UInt(w.W)
@@ -70,4 +71,14 @@ class DecoupledGcd(width: Int) extends Module {
       busy := true.B
     }
   }
+}
+
+object Main extends App{
+  // These lines generate the Verilog output
+  println(
+    ChiselStage.emitSystemVerilog(
+      new DecoupledGcd(8),
+      firtoolOpts = Array("-disable-all-randomization", "-strip-debug-info")
+    )
+  )
 }
